@@ -46,6 +46,13 @@
             border: 1px solid #cccccc;
         }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 100vh; /* Full screen height */
+        width: 100%;   /* Full screen width */
+      }
+    </style>
 </head>
 <body>
     <div class="container text-center">
@@ -60,13 +67,36 @@
             <iframe src="https://thingspeak.com/channels/2802910/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15" title="ThingSpeak Chart"></iframe>
         </div>
     </div>
+    <div id="map"></div>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Latitude and Longitude for the location
+        const latitude = 16.2463375;  // Example: San Francisco
+        const longitude = 80.4077208;
+
+        // Initialize the map
+        const map = L.map('map').setView([latitude, longitude], 13); // Set zoom level to 13
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a marker at the latitude and longitude
+        const marker = L.marker([latitude, longitude]).addTo(map);
+
+        // Add a popup to the marker
+        marker.bindPopup(`<b>Location</b><br>Latitude: ${latitude}<br>Longitude: ${longitude}`).openPopup();
+    </script>
 
     <script>
         function onFunction() {
-            fetch("https://api.thingspeak.com/update?api_key=JLIWBTY7NACCGDWR&field1=10")
+            fetch("https://api.thingspeak.com/update?api_key=CLUQVBAMFKK1GALQ&field1=10")
                 .then(response => {
                     if (response.ok) {
-                        alert("The system is ON");
+                        alert("The system is configured to be speed control");
                     } else {
                         alert("Failed to turn ON the system");
                     }
@@ -78,7 +108,7 @@
         }
 
         function offFunction() {
-            fetch("https://api.thingspeak.com/update?api_key=JLIWBTY7NACCGDWR&field1=0")
+            fetch("https://api.thingspeak.com/update?api_key=CLUQVBAMFKK1GALQ&field1=0")
                 .then(response => {
                     if (response.ok) {
                         alert("The system is OFF");
